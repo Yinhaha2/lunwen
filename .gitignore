@@ -1,0 +1,36 @@
+# LaTeX build
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.bcf
+*.run.xml
+*.spl
+*.dvi
+*.ps
+
+# Editors / OS
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.vscode/
+.idea/
+
+# Secrets
+.env
+.env.*
+*.token
+.github_token
+.deepseekToken

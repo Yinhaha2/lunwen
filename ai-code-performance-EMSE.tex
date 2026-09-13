@@ -1,0 +1,134 @@
+\documentclass[smallextended]{svjour3}
+
+\input{setup}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{frame=tb,
+	language=Java,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	%numberstyle=\tiny\color{gray},
+	%keywordstyle=\color{blue},
+	%commentstyle=\color{dkgreen},
+	%stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3
+}
+
+
+\newcommand{\specialcell}[2][c]{%
+	\begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+% \usepackage{caption}
+\usepackage{subcaption}
+\usepackage{subfig}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{color}  
+\usepackage{textcase}
+\usepackage{setspace}
+\usepackage[flushleft]{threeparttable}
+\usepackage{flushend}
+\usepackage{float}
+\usepackage{courier}
+\usepackage{multirow}
+% \usepackage{hyperref}
+\usepackage{makecell}
+
+
+\usepackage[round,sort]{natbib}
+
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+\newcommand{\shuang}[1]{\textcolor{black}{{#1}}}
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+
+
+\begin{document}
+
+\title{Beyond Merge Rate: Measuring Performance of Autonomous Coding Agents}
+
+\author{Ziyi Yin \and
+	      Jinfu Chen\textsuperscript{$\ast$} \thanks{\textsuperscript{$\ast$}Corresponding author} \and
+        Derui Zhu \and  
+	    Jifeng Xuan  
+}
+
+\institute{Ziyi Yin, Jinfu Chen, Jifeng Xuan\at
+	School of Computer Science\\
+	Wuhan University\\
+	Wuhan, China\\
+	\email{\{ziyiyin, jxuan\}@whu.edu.cn} \\\\
+    Jinfu Chen\at
+	School of Computer Science \& Key Laboratory of Intelligent Sensing System and Security (Ministry of Education)\\
+	Wuhan University \& Hubei University\\
+	Wuhan, China\\
+	\email{jinfuchen@whu.edu.cn} \\\\ 
+	Derui Zhu\at
+	Department of Software Engineering\\
+	Rochester Institute of Technology\\
+	Rochester, NY, US\\
+	\email{dxzvse@rit.edu} 
+}
+
+\date{Received: date / Accepted: date}
+
+% make the title area
+\maketitle
+\input{Abstract}
+
+\keywords{Agentic Software\and Software Performance\and Performance Engineering \and Large Language Models}
+
+\input{Introduction}
+
+\input{Background}
+
+\input{Approach}
+
+% \input{CaseStudySetup}
+
+\input{CaseStudyResult.tex}
+
+% \input{DeploymentInIndustry}
+
+\input{Discussion}
+
+\input{Threats}
+
+\input{RelatedWork} 
+
+\input{Conclusions}
+
+\input{ACKNOWLEDGMENT}
+
+% \section*{Acknowledgement}
+\input{Declarations}
+
+%Import the natbib package and sets a bibliography  and citation styles
+\newpage
+\bibliographystyle{natbib}
+
+\bibliography{ref}
+
+
+% that's all folks
+\end{document}
+
+
