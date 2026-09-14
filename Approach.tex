@@ -1,32 +1,43 @@
 \section{Study setup}
 \label{approach}
-In this section, we present our case study setup. In particular, we present the datasets used in our case study and our experimental setup to collect ...
+
+In this section we describe the corpus and the analysis pipeline: how we obtain 1,219 agent-authored performance PRs, how we refresh GitHub metadata, and how we produce structured labels for the research questions.
 
 \subsection{Corpus construction}
-AIDev dataset - LLM-based performance detection - 1,219 performance PRs across 447 repositories and five agents
 
-The overview of datasets is shown in Table~\ref{dataset}.
+We start from an expanded snapshot of agent-authored pull requests in the AIDev ecosystem. A PR enters the corpus if it is performance-related under at least one of two \emph{mutually exclusive} detectors stored in \code{detection\_source}:
+(i)~an LLM title-and-body classifier (\code{llm\_title\_body\_classifier}, 1,158 PRs), or
+(ii)~an AIDev \code{perf} task tag that the classifier missed (\code{aidev\_pr\_task\_type\_perf\_only}, 61 PRs).
+These two sources already describe the post-cleanup corpus. Two GitHub objects that later returned 404 were removed from an earlier 1,221-row table; the retained union is 1,219 PRs in 446 repositories.
 
-\begin{table}
+The 61-PR detector is a residual, not the set of all AIDev performance tags. In total, 339 PRs have AIDev task type \code{perf} (278 of them also pass the LLM classifier). We do not require the AIDev task type to be \code{perf}: many performance-oriented changes are filed as \code{feat} (526) or \code{fix} (198). Restricting to the \code{perf} tag would measure naming conventions, not performance work.
+
+Table~\ref{dataset} summarizes the corpus. Outcome is a GitHub-derived status, not an LLM close reason. A PR is \emph{merged} when GitHub records a merge timestamp (670). It is \emph{open} when it is still open at the analysis snapshot (39). Every other terminal PR is \emph{closed} (510). Closed means not merged. It does not mean that a maintainer wrote a rejection. Unless a research question says otherwise, comparative rates use the terminal set (merged \(+\) closed, \(n=1{,}180\)). The terminal merge rate is 56.8\% (670/1{,}180).
+
+\begin{table}[tbh]
 \centering
-\caption{\shuang{Overview of datasets used in our study}}
+\caption{\shuang{Overview of agent-authored performance PRs used in our study}}
 \label{dataset}
-\resizebox{0.9\columnwidth}{!}{  
-\begin{tabular}{ccccc}
+\resizebox{0.95\columnwidth}{!}{  
+\begin{tabular}{lccccc}
 \toprule
-Dataset   & Language & \#Instances & Year & Reference \\ \toprule
-HumanEval & Python   & 164        & 2021 &      \cite{chen2021evaluating}    \\ 
-AixBench  & Java     & 187        & 2022 &   \cite{hao2022aixbench}        \\ 
-MBPP      & Python   & 974        & 2021  &   \cite{austin2021mbpp}       \\
-EvalPerf  & Python   & 118        & 2024  &   \cite{DBLP:journals/corr/abs-2408-06450}       \\\bottomrule
+Agent & Total PRs & Merged & Closed & Open & Terminal Merge Rate \\ 
+\midrule
+OpenAI Codex & 639 & 451 & 178 & 10 & 71.7\% \\
+Devin        & 225 & 73  & 152 & 0  & 32.4\% \\
+Copilot      & 222 & 77  & 127 & 18 & 37.7\% \\
+Cursor       & 95  & 48  & 40  & 7  & 54.5\% \\
+Claude Code  & 38  & 21  & 13  & 4  & 61.8\% \\
+\midrule
+\textbf{Total} & \textbf{1,219} & \textbf{670} & \textbf{510} & \textbf{39} & \textbf{56.8\%} \\
+\bottomrule
 \end{tabular}
 }
 \end{table}
 
-
-
 \subsection{Experimental setup}
-In this subsection, we describe the process of collecting the generated PRs and performance data for each question in our study datasets. Figure~\ref{overview} illustrates the overall process of our approach. We follow four steps to collect the needed data. In the first step, we .... 
+
+Figure~\ref{overview} shows the four steps of data collection and labeling.
 
 \begin{figure*}[tbh]
 \centerline{\includegraphics[width=1\textwidth]{./pics/approach/overview-new-new.drawio.pdf}}
@@ -34,17 +45,17 @@ In this subsection, we describe the process of collecting the generated PRs and 
 \label{overview}
 \end{figure*}
 
-{\textbf{Step 1: XXX.}} 
+{\textbf{Step 1: Collecting agent-authored PRs.}}
+The unit of analysis is a GitHub pull request, keyed by the global PR id. A five-way \code{agent} field records which coding agent produced the PR (OpenAI Codex, Devin, Copilot, Cursor, or Claude Code). The GitHub login of the PR author is stored separately in \code{user}.
 
+{\textbf{Step 2: Filtering performance-related PRs.}}
+We apply the two detectors above and keep their disjoint union. Each master row stores the agent, GitHub timestamps, AIDev task type, BERTopic assignment, and detection source.
 
-{\textbf{Step 2: Generating code.}}
-In this step, we use
+{\textbf{Step 3: GitHub artifacts and status refresh.}}
+Commits, file-level diffs, formal reviews, discussion comments, inline review comments, timelines, and linked issues were collected into per-PR and corpus-level tables. A later refresh re-queries GitHub for PRs that were still \emph{open}, updates \code{state}/\code{merged\_at}/\code{closed\_at}, and drops deleted (404) objects. It does not recrawl every artifact for every PR. Formal reviews exist for only a minority of PRs ($\approx$29\%). Missing artifacts are treated as missing, not as evidence that a concern was absent.
 
-\textbf{Step 3. Filtering performance-related PRs.}
-In this step, we filter 
-
-
-\textbf{Step 4. Analyzing PR data.}
+{\textbf{Step 4: Analyzing PR data.}}
 \label{analyze}
+For each PR we assemble a bounded payload (metadata, body, reviews, comments, commit messages, file statistics, timeline, and linked issues). Full file patches are omitted from the model input; long text fields and inline diff hunks are truncated, and file-level rows are capped. We prompt DeepSeek-V4-Pro with a fixed protocol, a JSON schema, and six human-authored few-shot analyses. The model returns quantitative metrics, performance labels (optimization layer, antipattern, outcome reason, detection method, reproducibility, regression handling, boundary tag), and a short structured narrative. We aggregate the JSON into the table used by the research questions. Labels such as \code{outcome\_reason} and \code{boundary\_tag} are analytic constructs, not GitHub close reasons. Merge and close remain GitHub outcome variables (\code{merged\_at} / \code{state}).
 
-The hardware configuration for the experiment includes an Intel Core i9-13900K processor, 128 GB of RAM, 1 TB SSD for primary storage, and 8 TB HDD for secondary storage, and the system operates on Ubuntu 22.04.4 LTS. By following the experimental setup, we aim to achieve a thorough and systematic evaluation of the performance regressions of AI-generated code, considering both static and dynamic aspects, and providing actionable insights for code optimization and tool improvement.
+We do not execute the patches. This study measures the public process of performance-oriented agent PRs. It does not measure whether a claimed speed-up would reproduce under a profiler.
