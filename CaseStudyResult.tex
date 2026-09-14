@@ -3,63 +3,111 @@
 \label{result}
 In this section, we present our case study results by answering four research questions. For each research question, we show the motivation, approach, and corresponding results of the research question.
 
-\subsection{RQ1: What does the outcome landscape of agent-authored performance PRs?}
+{\color{red}Image to be added}
+
+\subsection{RQ1: What is the outcome landscape of agent-authored performance PRs?}
 \label{RQ1}
+
 \noindent\textbf{Motivation:} 
-Want to know the characteristics of AI-generated performance PRs
+If merge rate is the score, we first need to know what the score is averaging. Treating “closed” as “rejected by a reviewer” would invent a quality gate that many threads never contained. Treating “merged” as “reviewed and measured” would invent a performance-engineering process that most successes never entered. RQ1 maps the landscape before any path is read as skill.
 
 \noindent\textbf{Approach:}
-Our approach involves two strategies to evaluate the performance of AI-generated PRs. In particular, ...
-
+We report GitHub status on the full corpus (\(n=1{,}219\)). Comparative merge rates use terminal PRs (\(n=1{,}180\)). Agent rates are shown for every agent; Claude Code (\(n=38\)) is not ranked as a model comparison. Internal structure of merged and closed PRs uses the labels in the official RQ analysis. For closures we apply a mechanism partition: \emph{real rejection} (blocking review, \texttt{CHANGES\_REQUESTED}, or an explicit technical or design veto), \emph{silent abandonment} (stale, no review, author walk-away, or bot expiry), \emph{other process}, and \emph{unclear}. Open PRs enter only the corpus-level counts.
 
 \noindent\textbf{Results:}
-Overall distribution (671 merged / 509 closed / 39 open; terminal merge rate 56.9\%...
 
+\textbf{The terminal merge rate is 56.8\% (670/1{,}180), but merged and closed are internally heterogeneous.} As shown in the status distribution, 670 PRs are merged (55.0\% of 1{,}219), 510 are closed (41.8\%), and 39 remain open (3.2\%). The corresponding terminal reject rate is 43.2\% (510/1{,}180).
 
+\textbf{Agents do not share one rate.} As shown in the agent table, OpenAI Codex has a terminal merge rate of 71.7\% (451/629). Cursor has 54.5\% (48/88) and Claude Code has 61.8\% (21/34, \(n=38\) in the corpus). Copilot and Devin sit lower: 37.7\% (77/204) and 32.4\% (73/225). We report these gaps as descriptive facts. They may mix model behavior with repository choice, default patch size, and whether the agent opens unsolicited optimizations. They are not a leaderboard.
+
+\textbf{The work sits in ordinary product layers.} The most common optimization layers are application service (201/1{,}219 = 16.5\%), build (165 = 13.5\%), frontend UI (137 = 11.2\%), and runtime library (122 = 10.0\%). Each compiler-related layer is under 4\%.
+
+\textbf{Merged is not one path.} Of 670 merges, 507 (75.7\%) are low-friction fast merges, 141 (21.0\%) merge after review iteration, and 22 (3.3\%) merge without formal review but are not fast. Among merged PRs the median lifetime is 0.075 hours (about five minutes); 528 (78.8\%) are tagged \code{fast\_merge}; 391 (58.4\%) have zero comments; 450 (67.2\%) have no formal review. Across the corpus, 1{,}004 of 1{,}219 PRs (82.4\%) have no linked issue. Reading merge as “the optimization survived review” overstates review depth for the majority class.
+
+\textbf{Closed is not one path either.} The labeled RQ partition covers 509 closures: silent abandonment accounts for 282 (55.4\%) and real rejection for 164 (32.2\%); other process accounts for 26 (5.1\%) and unclear for 37 (7.3\%). One additional GitHub-closed PR was not in that labeled closed set. Inside abandonment, the author closes or walks away in 100 cases, the PR is closed without review engagement in 80, long inactivity accounts for 64, and bot expiry accounts for 38. Only 89 closed PRs have \code{blocking=true}. The reviewed-or-rejected subset is 195 PRs (38.3\% of the 509 labeled closures). Most non-merges never become a written argument about performance.
+
+\begin{center}
+\begin{tcolorbox}
+\textbf{Finding 1.} The terminal merge rate is 56.8\% (670/1{,}180), but the average hides two majorities: 75.7\% of merges are low-friction, and 55.4\% of labeled closures are silent abandonment.
+\end{tcolorbox}
+\end{center}
+
+{\color{red}Image to be added}
 
 \subsection{RQ2: How do agent-authored performance PRs get merged?}
 \label{RQ2}
-\noindent\textbf{Motivation:}
-What characterises the PRs that merge, how are they validated, and does the absence of review reflect a quality gate or an attention mismatch?
-Purpose. Show that success is a fast, low-attention regime, and that non-review is symmetric across outcomes.
 
+\noindent\textbf{Motivation:} RQ1 showed that most merges are short and lightly reviewed. That fact can be read as a cheap quality gate (the patch is small, readable, and CI-quiet) or as an attention mismatch (the PR never entered a human queue). RQ2 asks what successful PRs look like, what maintainers can be observed to use as a pass, and whether the absence of review behaves like a gate.
 
+\noindent\textbf{Approach:} Comparisons use terminal PRs only (\(n=1{,}180\)). We bin lifetime and churn and report merge rates inside each bin. We compare medians of merged versus closed PRs. Maintainer validation is read from the multi-label field \code{detection\_method} and from body-level evidence signals. We cross those signals with \code{boundary\_tag}. We do not interpret a higher comment count as deeper review.
 
-\noindent\textbf{Approach:}
-To investigate the 
+\noindent\textbf{Results:} 
 
-\noindent\textbf{Results:}
+\textbf{Successful performance PRs are fast, slightly smaller, and lightly reviewed; measurement is rarely the pass.} As shown in the lifetime bins, the terminal merge rate is 76.6\% under one hour (573 PRs), 57.2\% between one hour and one day (236), 39.4\% between one and seven days (180), and 16.7\% after seven days (150). Forty-one terminal PRs have a missing lifetime and do not merge. The median lifetime is 0.075 hours on the merged side and 23.9 hours on the closed side. Among merges, 78.8\% are fast merges.
 
- 
+\textbf{Size helps at the left tail but is a weak separator.} The \(\leq 100\)-line bin has the highest terminal merge rate (489 PRs, 61.3\%). Median churn is 141 lines merged versus 172 closed. The \(>10\)k-line bin still merges in 52.5\% of 40 terminal PRs. ``Keep it tiny'' describes the mode, not a law.
 
+\textbf{Merged PRs have a median of zero comments and 67.2\% have no formal review; closed PRs have a median of two comments and 75.5\% have no formal review.} Absence of review is therefore common on both sides. We would like to note that 82.4\% of the corpus has no linked issue: the typical performance PR is not closing a ticket that a maintainer already prioritized.
 
+\textbf{When validation is observable, it is reading, not measurement.} \code{detection\_method} is \code{unknown} on 786 of 1{,}219 PRs (64.5\%). \code{code\_reading} is the leading observable method (378 PRs, 31.0\%). CI automation appears on 93 PRs (7.6\%). Benchmark and load-test labels are single-digit. Materials labeled sufficient are 25 of 1{,}219 (2.1\%); 754 (61.9\%) are insufficient. Closed PRs are more likely to include numeric performance claims (24.9\% vs 12.8\%) and benchmark tables (6.3\% vs 2.4\%). Evidence is what harder PRs bring to review, not what the fast path requires.
 
+\textbf{Boundary tags agree.} The terminal merge rate is 79.4\% on \code{technical\_stack} (\(n=587\)), 35.7\% on \code{process} (\(n=560\)), and 12.5\% on \code{evidence\_required} (\(n=32\)). A check that is absent from most merges and most closures is not a quality gate. After seven days the terminal merge rate has already fallen to 16.7\%.
+
+\begin{center}
+\begin{tcolorbox}
+\textbf{Finding 2.} The merge path is a fast, low-attention regime: the terminal merge rate is 76.6\% under one hour and 16.7\% after seven days, and observable validation is dominated by code reading rather than measurement.
+\end{tcolorbox}
+\end{center}
+
+{\color{red}Image to be added}
 
 \subsection{RQ3: What are the root causes of failed AI-generated PRs?}
 \label{RQ3}
-\noindent\textbf{Motivation:} 
-Within the subset of closures that received review or a rejection signal, what are the dominant failure types, and how do they align with evidence, process, and technical boundaries?
 
+\noindent\textbf{Motivation:} RQ1 showed that most closures are silence. Asking for the root cause of “failed AI PRs” on all 509 labeled closures would rediscover abandonment and name it incompetence. The useful failure set is the subset in which a human or a blocking signal left a mark. Within that subset, we ask which concerns dominate, and how they align with evidence, process, and in-PR repair.
 
-\noindent\textbf{Approach:}
-We follow three steps to ....
+\noindent\textbf{Approach:} We follow three steps to investigate the root causes. First, we do not use all 509 labeled closed PRs as the failure sample; instead, we keep closures that have a formal review, a blocking flag, \texttt{CHANGES\_REQUESTED}, or a review-comment bucket other than \code{no\_review\_text} (195 PRs, 38.3\% of the 509 labeled closures). Second, we group primary concerns into functional or correctness failures, design or approach vetoes, missing evidence, CI or tests, scope, and mixed or silent cases. Third, we read the three \code{boundary\_tag} values as analytic non-code capabilities, using antipattern labels as a negative control.
 
-\noindent\textbf{Results:}
+\noindent\textbf{Results:} 
+
+\textbf{After silence is removed, reviewed failures look like ordinary engineering failures; agent-specific fragility appears at evidence, process, and repair.} On the labeled closed set, 329 of 509 PRs (64.6\%) have \code{no\_review\_text}. Among the rest, correctness-or-bug (66) and design-or-approach (61) far exceed explicitly performance-related review buckets (10). In the reviewed-or-rejected subset, functional or correctness failures account for 85 of 195 (43.6\%), design or approach vetoes for 51 (26.2\%), mixed or other for 23 (11.8\%), missing evidence for 14 (7.2\%), CI or test failure for 10 (5.1\%), silence with some signal for 9 (4.6\%), and overscope for 3 (1.5\%).
+
+\textbf{The examples are ordinary engineering.} A Codex PR in \texttt{dlt-hub/dlt} is closed after a maintainer reproduces an \texttt{ENOSPC} regression. A Copilot PR in \texttt{dotnet/msbuild} is closed after \texttt{CHANGES\_REQUESTED} on incorrect volume-path handling and no follow-up fix. A Claude Code PR in \texttt{zenml-io/zenml} is rejected because the design bypasses project materializers. \code{repeated\_io} leads on both merged (32) and closed (36) sides and does not separate outcomes. A new antipattern in the fix is labeled on 8 of 1{,}219 PRs (0.7\%).
+
+\textbf{The sharper contrast is the boundary tags.} Terminal merge rate is 79.4\% on \code{technical\_stack} (\(n=587\)), 35.7\% on \code{process} (\(n=560\)), and 12.5\% on \code{evidence\_required} (\(n=32\)). Materials labeled sufficient are 2.1\% of the corpus. \code{regression\_handling} is \code{not\_applicable} on 626 of 1{,}219 (51.4\%) and \code{reject\_close} on 397 (32.6\%). Only 148 PRs (12.1\%) are labeled \code{fix\_in\_pr}; a text heuristic attributes 82 of those 148 (55.4\%) to human-led or human-requested repair, 33 (22.3\%) to the AI author, and 22 (14.9\%) to collaboration. Reverts are almost absent (2). We state the last attribution as a heuristic, not as an identity log.
 
 % \vspace{-0.1cm}
 \begin{center}
 \begin{tcolorbox}
- Failure taxonomy ...
+\textbf{Finding 3.} In the reviewed-or-rejected subset (195/509), 43.6\% of failures are functional or correctness issues and 26.2\% are design vetoes; evidence-bound PRs have a terminal merge rate of 12.5\%, and only 12.1\% of the corpus is repaired in the same PR.
 \end{tcolorbox}
 \end{center}
 
+{\color{red}Image to be added}
 
 \subsection{RQ4: How to improve the performance of AI-generated PRs?}
 \label{RQ4}
-\noindent\textbf{Motivation:} 
-Which dimensions most sharply separate merged from closed PRs, how do capability boundaries and optimization layers stratify outcomes, and what interventions does this imply?
 
-\noindent\textbf{Approach:}
-We follow three steps to ....
+\noindent\textbf{Motivation:} The first three questions describe a landscape, a fast success regime, and a reviewed-failure regime. RQ4 asks which dimensions separate the two ends, whether capability-boundary tags move with the outcome, and what can be changed without misunderstanding the fast path. Here, “improve the performance of AI-generated PRs” means improving the outcomes of these performance PRs, not making generated functions faster on a benchmark.
 
-\noindent\textbf{Results:}
+\noindent\textbf{Approach:} We follow three steps to investigate the contrasts and propose interventions. First, we compare merged and closed PRs on lifetime, churn, interaction, materials, \code{perf\_focus}, and \code{optimization\_layer} (layers with terminal \(n \geq 20\)). Second, we overlay \code{boundary\_tag}, treating all contrasts as descriptive. Third, an intervention is proposed only when it matches the path that produced the contrast.
+
+\noindent\textbf{Results:} 
+
+\textbf{Merged and closed PRs separate first by speed and boundary type, not by who attached the richer table.} Merged PRs have a median lifetime of 0.075 hours and a 78.8\% fast-merge share; closed PRs have a median lifetime of 23.9 hours and no fast merge. Median churn is 141 versus 172 lines; the \(\leq 100\)-line bin is healthiest (61.3\%), but large PRs still merge about half the time. Interaction is higher on the closed side. Materials run against the claim that more benchmarks yield more merges: closed PRs more often carry numeric claims (24.9\% vs 12.8\%) and benchmark tables (6.3\% vs 2.4\%). Merged \code{perf\_focus} values more often include constant folding and compiler optimization; closed values more often include bundle-size reduction, build performance, and code splitting. Among layers with \(n \geq 20\), compiler backend (26, 84.6\%) and compiler (45, 80.0\%) sit high; \code{runtime\_vm} sits at 24.1\% (29). These layer cells are small and are not treated as a ranking of model skill.
+
+\textbf{Capability boundaries move with the outcome.} Technical-stack PRs have a terminal merge rate of 79.4\%; process PRs 35.7\%; evidence-required PRs 12.5\%. We state this as stratification, not as a causal graph. Process drop-off may be maintainer attention rather than an agent that cannot write a patch. Evidence drop-off may be a project standard that the current agent loop does not treat as a first-class task.
+
+\textbf{Those contrasts imply two programs, not one.}
+
+\textit{Program A, the fast path (RQ1.2, RQ2).} Keep patches atomic and inside a routine stack. Spend the PR body on what changed and why it is safe. Do not place unsolicited optimizations on a deep-review queue by default. Do not enforce a 100-line rule.
+
+\textit{Program B, the slow path (RQ1.3, RQ3).} When a change will be reviewed in depth, attach a before/after table and reproduction steps that meet an evidence standard. Treat \texttt{CHANGES\_REQUESTED} as a first-class agent task: 82 of 148 in-PR fixes are already labeled human-led or human-requested. Declare risk early for \code{runtime\_vm}, wide control-flow edits, and bundle-size work, or split the evidence commit from the code commit. For abandonment, a stale bot that asks for one maintainer sentence is better aligned with the mechanism partition than a bot that only closes.
+
+\textbf{We do not support the claim that adding a benchmark to every performance PR would raise merge rate.} That claim points in the opposite direction of the material signals.
+
+\begin{center}
+\begin{tcolorbox}
+\textbf{Finding 4.} Merged and closed PRs separate first by lifetime and boundary type (79.4\% vs 35.7\% vs 12.5\%); adding a benchmark to every performance PR is not supported by the data.
+\end{tcolorbox}
+\end{center}
