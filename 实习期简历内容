@@ -18,3 +18,14 @@ CrawlSingleflight（高并发）
 同一 site + keyword 的并发检索合并为一次真实爬取，其余请求等待同一 Future，从机制上消除热门番瞬时打穿源站；缓存查找也放在 Singleflight 内，未命中时不会出现多线程同时回源。配合短 TTL 播放缓存，把「多用户同时搜同一部」从重复全量爬虫收成一次爬取 + 多次复用。
 
 
+Deep Research
+Skill
+Conduct systematic academic literature reviews in 6 phases, producing structured notes, a curated paper database, and a synthesized final report. Output is organized by phase for clarity.
+
+Literature Search
+Skill
+Search academic literature using Semantic Scholar, arXiv, and OpenAlex APIs. Returns structured JSONL with title, authors, year, venue, abstract, citations, and BibTeX. Use when the user needs to find papers, check related work, or build a bibliography.
+
+Firecrawl Research Papers
+Skill
+Find and synthesize research papers, whitepapers, PDFs, technical reports, and academic sources with Firecrawl Research, using semantic paper search, related-paper expansion, and in-body verification. Use when the user wants a literature review, paper summary, research landscape, or sourced synthesis from PDFs and scholarly/industry publications.
