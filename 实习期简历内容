@@ -1,4 +1,4 @@
-实习经历：底层通信与系统软件开发实习生
+实习经历：底层通信与系统软件开发实习生Balong解决方案硬件工程部[半导体业务部]系统平台组
 技术栈：C++, USB 2.0, fastboot, MBB（Mobile Board Band）驱动开发
 工作内容：
 1、启动组件跨平台重构与解耦交付：推进面向 OpenHarmony 等架构的 fastboot 到 hiboot 去 Android 化改造及双协议兼容，完成 Linux/Windows 环境下的跨平台交叉编译解耦。通过编写自动化测试脚本对比 fastboot 与 hiboot 执行结果完成全命令验证，拓展 TCP 网络传输功能，并独立定位解决运行中的 Dump 异常等遗留问题。
